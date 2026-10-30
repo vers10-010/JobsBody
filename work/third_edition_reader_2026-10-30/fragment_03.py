@@ -24,61 +24,55 @@ def add_highlighting(page, checks):
     durations=[a['seconds'] for a in checks if re.fullmatch(r'audio/svetlana_p\d+\.mp3',a['file'])]
     assert len(durations)==4
     script=r'''
-<style>:root{--player-height:150px}section{padding:12px;border-radius:10px;scroll-margin-top:calc(var(--player-height) + 20px)}section.active{background:#e0ebcd;box-shadow:inset 4px 0 #587b32}.sticky-player{position:sticky;top:0;z-index:10;background:#fbf8ef;padding:10px 0;border-bottom:1px solid #ccd5c4;box-shadow:0 5px 12px #243e3618}.sticky-player button{font:18px 'Segoe UI',sans-serif;padding:9px 22px;background:#244c3f;color:white;border:0;border-radius:8px;cursor:pointer;min-height:44px}.sticky-player button:focus-visible{outline:3px solid #b48b30;outline-offset:3px}.sticky-player small{display:block;margin:4px 0}.sticky-player audio{display:block;width:100%}</style>
+<style>section{padding:12px;border-radius:10px;scroll-margin-top:170px}section.active{background:#e0ebcd;box-shadow:inset 4px 0 #587b32}.sticky-player{position:sticky;top:0;z-index:10;background:#fbf8ef;padding:10px 0;border-bottom:1px solid #ccd5c4;box-shadow:0 5px 12px #243e3618}.reader-button{font:18px 'Segoe UI',sans-serif;padding:9px 18px;background:#244c3f;color:white;border:0;border-radius:8px;cursor:pointer;min-height:44px}.sticky-player small{display:block;margin:4px 0}.sticky-player label{font:16px 'Segoe UI',sans-serif;margin-left:16px}.sticky-player audio{display:block;width:100%}button:focus-visible{outline:3px solid #b48b30;outline-offset:3px}</style>
 <script>
 'use strict';
 const durations=__DURATIONS__;
 const sections=Array.from(document.querySelectorAll('section'));
 const players=Array.from(document.querySelectorAll('audio'));
 const full=players[0];
-let currentPlayer=full;
-const toolbar=document.createElement('div');toolbar.className='sticky-player';
-full.before(toolbar);
-const toggle=document.createElement('button');toggle.type='button';toggle.textContent='Слушать';
-const playerStatus=document.createElement('small');playerStatus.textContent='Все четыре абзаца';
-toolbar.append(toggle,playerStatus,full);
-function updateControls(){
-  toggle.textContent=currentPlayer.paused?'Слушать':'Пауза';
-  playerStatus.textContent=currentPlayer===full?'Все четыре абзаца':(currentPlayer.closest('section')?.querySelector('h2')?.textContent||'Выбранный фрагмент');
+const authorSource=full.getAttribute('src');
+const commentSource=players[players.length-1].getAttribute('src');
+const starts=durations.map((_,i)=>durations.slice(0,i).reduce((n,d)=>n+d+0.65,0));
+let mode='author',active=-1;
+const toolbar=document.createElement('div');toolbar.className='sticky-player';full.before(toolbar);
+const toggle=document.createElement('button');toggle.type='button';toggle.className='reader-button';toggle.textContent='Слушать';
+const status=document.createElement('small');status.textContent='Все четыре абзаца';
+const label=document.createElement('label');
+const follow=document.createElement('input');follow.type='checkbox';follow.checked=false;
+label.append(follow,document.createTextNode(' Следить за текстом'));
+toolbar.append(toggle,label,status,full);
+function update(){toggle.textContent=full.paused?'Слушать':'Пауза';}
+function sync(){
+ let index=sections.length-1;
+ if(mode==='author'){index=durations.length-1;for(let i=0;i<durations.length;i++){if(full.currentTime<starts[i]+durations[i]+0.65){index=i;break;}}}
+ const changed=index!==active;active=index;
+ sections.forEach((s,i)=>{s.classList.toggle('active',i===index);if(i===index)s.setAttribute('aria-current','true');else s.removeAttribute('aria-current');});
+ status.textContent=mode==='comment'?'Комментарий переводчика':'Авторский текст · '+sections[index].querySelector('h2').textContent;
+ if(changed&&follow.checked&&!full.paused)sections[index].scrollIntoView({block:'start',behavior:'smooth'});
 }
-toggle.addEventListener('click',()=>{
-  if(currentPlayer.paused)currentPlayer.play().catch(()=>{playerStatus.textContent='Не удалось запустить аудио. Попробуйте ещё раз.';});
-  else currentPlayer.pause();
+function play(){full.play().catch(()=>{status.textContent='Не удалось запустить аудио. Попробуйте ещё раз.';});}
+toggle.addEventListener('click',()=>{if(full.paused)play();else full.pause();});
+sections.forEach((section,i)=>{
+ const audio=players[i+1];audio.pause();
+ const button=document.createElement('button');button.type='button';button.className='reader-button';
+ button.textContent=i<durations.length?'Слушать с этого абзаца':'Слушать комментарий';
+ audio.replaceWith(button);
+ button.addEventListener('click',()=>{
+   full.pause();
+   const nextMode=i<durations.length?'author':'comment';
+   const source=nextMode==='author'?authorSource:commentSource;
+   mode=nextMode;
+   if(full.getAttribute('src')!==source)full.setAttribute('src',source);
+   full.currentTime=nextMode==='author'?starts[i]:0;
+   sync();play();
+ });
 });
-function measureToolbar(){document.documentElement.style.setProperty('--player-height',toolbar.getBoundingClientRect().height+'px');}
-measureToolbar();
-if(typeof ResizeObserver!=='undefined')new ResizeObserver(measureToolbar).observe(toolbar);
-window.addEventListener('resize',measureToolbar);
-let active=-1;
-function select(index,follow){
-  const changed=index!==active; active=index;
-  sections.forEach((s,i)=>{s.classList.toggle('active',i===index);if(i===index)s.setAttribute('aria-current','true');else s.removeAttribute('aria-current');});
-  if(index<0||!follow)return;
-  const section=sections[index],text=section.querySelector('p');
-  if(changed)section.scrollIntoView({block:'start',behavior:'smooth'});
-  else if(text){
-    const player=players.find(a=>!a.paused);
-    if(!player)return;
-    let elapsed=player.currentTime,total=player.duration;
-    if(player===full){elapsed-=durations.slice(0,index).reduce((n,d)=>n+d+0.65,0);total=durations[index];}
-    const rect=text.getBoundingClientRect();
-    const y=rect.top+rect.height*Math.max(0,Math.min(1,elapsed/total));
-    const top=toolbar.getBoundingClientRect().height+24;
-    if(Number.isFinite(y)&&(y<top||y>innerHeight-80))window.scrollBy({top:y-(top+Math.max(0,innerHeight-top-80)*.35),behavior:'smooth'});
-  }
-}
-function sync(player,follow){
-  let index=players.indexOf(player)-1;
-  if(player===full){let end=0;index=durations.length-1;for(let i=0;i<durations.length;i++){end+=durations[i]+0.65;if(player.currentTime<end){index=i;break;}}}
-  select(index,follow);
-}
-players.forEach(player=>{
-  player.addEventListener('play',()=>{currentPlayer=player;players.forEach(other=>{if(other!==player)other.pause();});updateControls();sync(player,true);});
-  player.addEventListener('pause',updateControls);
-  player.addEventListener('timeupdate',()=>{if(!player.paused)sync(player,true);});
-  player.addEventListener('seeked',()=>sync(player,!player.paused));
-  player.addEventListener('ended',()=>{select(-1,false);updateControls();});
-});
+full.addEventListener('play',()=>{update();sync();});
+full.addEventListener('pause',update);
+full.addEventListener('timeupdate',sync);
+full.addEventListener('seeked',sync);
+full.addEventListener('ended',()=>{update();sections.forEach(s=>{s.classList.toggle('active',false);s.removeAttribute('aria-current');});active=-1;});
 </script>
 '''.replace('__DURATIONS__',json.dumps(durations))
     return page.replace('</html>',script+'</html>')
