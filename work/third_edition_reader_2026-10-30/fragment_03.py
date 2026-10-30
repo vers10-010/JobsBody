@@ -24,13 +24,31 @@ def add_highlighting(page, checks):
     durations=[a['seconds'] for a in checks if re.fullmatch(r'audio/svetlana_p\d+\.mp3',a['file'])]
     assert len(durations)==4
     script=r'''
-<style>section{padding:12px;border-radius:10px;scroll-margin-top:20px}section.active{background:#e0ebcd;box-shadow:inset 4px 0 #587b32}</style>
+<style>:root{--player-height:150px}section{padding:12px;border-radius:10px;scroll-margin-top:calc(var(--player-height) + 20px)}section.active{background:#e0ebcd;box-shadow:inset 4px 0 #587b32}.sticky-player{position:sticky;top:0;z-index:10;background:#fbf8ef;padding:10px 0;border-bottom:1px solid #ccd5c4;box-shadow:0 5px 12px #243e3618}.sticky-player button{font:18px 'Segoe UI',sans-serif;padding:9px 22px;background:#244c3f;color:white;border:0;border-radius:8px;cursor:pointer;min-height:44px}.sticky-player button:focus-visible{outline:3px solid #b48b30;outline-offset:3px}.sticky-player small{display:block;margin:4px 0}.sticky-player audio{display:block;width:100%}</style>
 <script>
 'use strict';
 const durations=__DURATIONS__;
 const sections=Array.from(document.querySelectorAll('section'));
 const players=Array.from(document.querySelectorAll('audio'));
 const full=players[0];
+let currentPlayer=full;
+const toolbar=document.createElement('div');toolbar.className='sticky-player';
+full.before(toolbar);
+const toggle=document.createElement('button');toggle.type='button';toggle.textContent='Слушать';
+const playerStatus=document.createElement('small');playerStatus.textContent='Все четыре абзаца';
+toolbar.append(toggle,playerStatus,full);
+function updateControls(){
+  toggle.textContent=currentPlayer.paused?'Слушать':'Пауза';
+  playerStatus.textContent=currentPlayer===full?'Все четыре абзаца':(currentPlayer.closest('section')?.querySelector('h2')?.textContent||'Выбранный фрагмент');
+}
+toggle.addEventListener('click',()=>{
+  if(currentPlayer.paused)currentPlayer.play().catch(()=>{playerStatus.textContent='Не удалось запустить аудио. Попробуйте ещё раз.';});
+  else currentPlayer.pause();
+});
+function measureToolbar(){document.documentElement.style.setProperty('--player-height',toolbar.getBoundingClientRect().height+'px');}
+measureToolbar();
+if(typeof ResizeObserver!=='undefined')new ResizeObserver(measureToolbar).observe(toolbar);
+window.addEventListener('resize',measureToolbar);
 let active=-1;
 function select(index,follow){
   const changed=index!==active; active=index;
@@ -45,7 +63,8 @@ function select(index,follow){
     if(player===full){elapsed-=durations.slice(0,index).reduce((n,d)=>n+d+0.65,0);total=durations[index];}
     const rect=text.getBoundingClientRect();
     const y=rect.top+rect.height*Math.max(0,Math.min(1,elapsed/total));
-    if(Number.isFinite(y)&&(y<40||y>innerHeight-80))window.scrollBy({top:y-innerHeight*.4,behavior:'smooth'});
+    const top=toolbar.getBoundingClientRect().height+24;
+    if(Number.isFinite(y)&&(y<top||y>innerHeight-80))window.scrollBy({top:y-(top+Math.max(0,innerHeight-top-80)*.35),behavior:'smooth'});
   }
 }
 function sync(player,follow){
@@ -54,10 +73,11 @@ function sync(player,follow){
   select(index,follow);
 }
 players.forEach(player=>{
-  player.addEventListener('play',()=>{players.forEach(other=>{if(other!==player)other.pause();});sync(player,true);});
+  player.addEventListener('play',()=>{currentPlayer=player;players.forEach(other=>{if(other!==player)other.pause();});updateControls();sync(player,true);});
+  player.addEventListener('pause',updateControls);
   player.addEventListener('timeupdate',()=>{if(!player.paused)sync(player,true);});
   player.addEventListener('seeked',()=>sync(player,!player.paused));
-  player.addEventListener('ended',()=>select(-1,false));
+  player.addEventListener('ended',()=>{select(-1,false);updateControls();});
 });
 </script>
 '''.replace('__DURATIONS__',json.dumps(durations))
