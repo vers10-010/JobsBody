@@ -80,6 +80,7 @@ sections.forEach((section,i)=>{
  const button=document.createElement('button');button.type='button';button.className='reader-button';
  button.textContent=i<durations.length?'Слушать с этого абзаца':'Слушать комментарий';
  audio.replaceWith(button);
+ if(i===durations.length)section.querySelector('p').before(button);
  button.addEventListener('click',()=>{
    const nextMode=i<durations.length?'author':'comment';
    loadPosition(nextMode,nextMode==='author'?starts[i]:0,full.playbackRate,true);
