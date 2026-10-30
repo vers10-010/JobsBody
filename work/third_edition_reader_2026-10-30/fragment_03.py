@@ -20,6 +20,49 @@ RU=[
 COMMENT='Комментарий переводчика. Что автор здесь имеет в виду. Автор объясняет вторую причину нового издания и связывает её с работами Джеймса Ошмана и Кэндис Перт. Он видит в них основание для расширения своего понимания телесной работы. Оценки научного значения, исторических заслуг и терапевтической эффективности здесь принадлежат автору книги; перевод сохраняет их и не означает отдельной проверки этих утверждений. В физическом смысле автор описывает перенос химических сигналов молекулами и их действие через соответствующие рецепторы. Выражение «согласовывать взаимодействие» передаёт его образную формулировку: молекулы не принимают решений. Подробной последовательности от конкретного телесного воздействия до выделения определённого нейропептида и лечебного результата в этом отрывке нет. Конкретный механизм действия соединительной ткани здесь также не изложен. «Пространство для манёвра» в последнем абзаце — метафора человеческой свободы.'
 PAGES=['336–337','337','337','337']
 
+def add_highlighting(page, checks):
+    durations=[a['seconds'] for a in checks if re.fullmatch(r'audio/svetlana_p\d+\.mp3',a['file'])]
+    assert len(durations)==4
+    script=r'''
+<style>section{padding:12px;border-radius:10px;scroll-margin-top:20px}section.active{background:#e0ebcd;box-shadow:inset 4px 0 #587b32}</style>
+<script>
+'use strict';
+const durations=__DURATIONS__;
+const sections=Array.from(document.querySelectorAll('section'));
+const players=Array.from(document.querySelectorAll('audio'));
+const full=players[0];
+let active=-1;
+function select(index,follow){
+  const changed=index!==active; active=index;
+  sections.forEach((s,i)=>{s.classList.toggle('active',i===index);if(i===index)s.setAttribute('aria-current','true');else s.removeAttribute('aria-current');});
+  if(index<0||!follow)return;
+  const section=sections[index],text=section.querySelector('p');
+  if(changed)section.scrollIntoView({block:'start',behavior:'smooth'});
+  else if(text){
+    const player=players.find(a=>!a.paused);
+    if(!player)return;
+    let elapsed=player.currentTime,total=player.duration;
+    if(player===full){elapsed-=durations.slice(0,index).reduce((n,d)=>n+d+0.65,0);total=durations[index];}
+    const rect=text.getBoundingClientRect();
+    const y=rect.top+rect.height*Math.max(0,Math.min(1,elapsed/total));
+    if(Number.isFinite(y)&&(y<40||y>innerHeight-80))window.scrollBy({top:y-innerHeight*.4,behavior:'smooth'});
+  }
+}
+function sync(player,follow){
+  let index=players.indexOf(player)-1;
+  if(player===full){let end=0;index=durations.length-1;for(let i=0;i<durations.length;i++){end+=durations[i]+0.65;if(player.currentTime<end){index=i;break;}}}
+  select(index,follow);
+}
+players.forEach(player=>{
+  player.addEventListener('play',()=>{players.forEach(other=>{if(other!==player)other.pause();});sync(player,true);});
+  player.addEventListener('timeupdate',()=>{if(!player.paused)sync(player,true);});
+  player.addEventListener('seeked',()=>sync(player,!player.paused));
+  player.addEventListener('ended',()=>select(-1,false));
+});
+</script>
+'''.replace('__DURATIONS__',json.dumps(durations))
+    return page.replace('</html>',script+'</html>')
+
 def prepare():
     if OUT.exists():
         saved=json.loads((OUT/'translation.json').read_text(encoding='utf-8'))
@@ -72,6 +115,7 @@ async def main():
         label='Что автор здесь имеет в виду' if b['kind']=='comment' else 'Абзац '+b['id'][1:]+' · стр. '+b['page']
         sections+=f'<section><h2>{label}</h2><p>{html.escape(b["text"])}</p><audio controls preload="metadata" src="audio/svetlana_{b["id"]}.mp3"></audio></section>'
     page='<!doctype html><html lang="ru"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Телесная работа и наука — окончание</title><style>body{max-width:850px;margin:40px auto;padding:0 22px;background:#fbf8ef;color:#243e36;font:22px/1.75 Georgia}h1{line-height:1.2}h2{font:22px Segoe UI}audio{width:100%}section{margin:40px 0}small{font:16px Segoe UI}a{color:#244c3f}</style><h1>Телесная работа и наука — окончание</h1><small>Job’s Body · Третье издание · Глава 11 · Страницы 336–337 · Фрагмент 3</small><p>Четыре абзаца авторского текста подряд. Голос: Светлана.</p><audio controls preload="metadata" src="audio/svetlana_author.mp3"></audio><p><a download href="audio/svetlana_author.mp3">Скачать озвучку авторского текста</a></p>'+sections+'<p><a href="../fragment_02/index.html">Предыдущий фрагмент</a></p><small>Исходник получен · Перевод готов · Аудио готово · Прослушивание пользователем не подтверждено.<br>Следующее место продолжения: Sweet Science, стр. 337. Комментарий отделён от авторского текста.</small></html>'
+    page=add_highlighting(page,checks)
     assert all((OUT/r).exists() for r in re.findall(r'(?:src|href)="([^"]+)"',page))
     (OUT/'index.html').write_text(page,encoding='utf-8')
     assert all(base.sha(OUT/n)==h for n,h in hashes.items())
