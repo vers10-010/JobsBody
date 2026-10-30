@@ -1,0 +1,30 @@
+{
+  "section": "Introduction",
+  "source_received": true,
+  "translation_ready": true,
+  "pdf_ready": true,
+  "audio_ready": true,
+  "listened": false,
+  "duration_seconds": 4367.94,
+  "notes_in_audio": 16,
+  "archive": "E:\\Jobs_Body_92-144\\Введение_Introduction_начало_xviii-xxxi_2026-09-14",
+  "slack_pdf": "F0C2CUC4X1N",
+  "slack_audio": "published and live channel verified",
+  "slack_files": {
+    "pdf": {
+      "file_id": "F0C2CUC4X1N",
+      "link": "https://respirofasciadinamics.slack.com/files/U0BUK4X7SAU/F0C2CUC4X1N/jobs_body_introduction______________xviii-xxxi_ru-en.pdf",
+      "channel_id": "C0BUU4J3XD4"
+    },
+    "m4b": {
+      "file_id": "F0C1CB9A7AP",
+      "link": "https://respirofasciadinamics.slack.com/files/U0BUK4X7SAU/F0C1CB9A7AP/jobs_body_introduction______________xviii-xxxi_________________________________________.m4b",
+      "channel_id": "C0BUU4J3XD4"
+    },
+    "mp3": {
+      "file_id": "F0C1N860HTN",
+      "link": "https://respirofasciadinamics.slack.com/files/U0BUK4X7SAU/F0C1N860HTN/jobs_body_introduction______________xviii-xxxi_________________________________________.mp3",
+      "channel_id": "C0BUU4J3XD4"
+    }
+  }
+}

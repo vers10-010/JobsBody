@@ -1,0 +1,124 @@
+{
+  "source_received": true,
+  "translation_ready": true,
+  "audio_ready": true,
+  "human_listened": false,
+  "scope": "Три полных абзаца страниц 335–336, заголовок и комментарий переводчика",
+  "voices": {
+    "dmitry": [
+      "Дмитрий",
+      "ru-RU-DmitryNeural",
+      "en-US-GuyNeural"
+    ],
+    "svetlana": [
+      "Светлана",
+      "ru-RU-SvetlanaNeural",
+      "en-US-JennyNeural"
+    ]
+  },
+  "rate": "-15%",
+  "audio": [
+    {
+      "file": "dmitry_heading.mp3",
+      "bytes": 148652,
+      "sha256": "2d683eabcad754af3f4ba748ccd85f227959dcec686e2a1e431a6fca6c68857e",
+      "seconds": 9.216,
+      "peak_pcm16": 19310,
+      "rms_pcm16": 2848.829612008654,
+      "decoded": true,
+      "human_listened": false
+    },
+    {
+      "file": "dmitry_p1.mp3",
+      "bytes": 313004,
+      "sha256": "b4636e9354ed2cfd39107e5183b904d1c4f9301beae4fd4a4e24cb9ce54dd7ac",
+      "seconds": 19.488,
+      "peak_pcm16": 18486,
+      "rms_pcm16": 3234.0026455389166,
+      "decoded": true,
+      "human_listened": false
+    },
+    {
+      "file": "dmitry_p2.mp3",
+      "bytes": 624428,
+      "sha256": "ee2df88a2a699b402ff2649c0b36abab0e64b77d9ffdb8447a8a32532923a93f",
+      "seconds": 38.952,
+      "peak_pcm16": 20082,
+      "rms_pcm16": 3054.9691063303244,
+      "decoded": true,
+      "human_listened": false
+    },
+    {
+      "file": "dmitry_p3.mp3",
+      "bytes": 1599020,
+      "sha256": "52fc557813ff5b569583e62474755be2e60b8466639362059d851a16f58645bd",
+      "seconds": 99.864,
+      "peak_pcm16": 23252,
+      "rms_pcm16": 3093.8716294287074,
+      "decoded": true,
+      "human_listened": false
+    },
+    {
+      "file": "dmitry_comment.mp3",
+      "bytes": 711596,
+      "sha256": "adee661b292ea524841a096d60ea92cfa64d86a4b4c489ee71bc05a614c05b91",
+      "seconds": 44.4,
+      "peak_pcm16": 23309,
+      "rms_pcm16": 2978.804626791367,
+      "decoded": true,
+      "human_listened": false
+    },
+    {
+      "file": "svetlana_heading.mp3",
+      "bytes": 149804,
+      "sha256": "19450d9d1df2aeab5e0c75731ea147962f218b1fa0bb8dd9f71223e84755ceef",
+      "seconds": 9.288,
+      "peak_pcm16": 18212,
+      "rms_pcm16": 2659.1651749988596,
+      "decoded": true,
+      "human_listened": false
+    },
+    {
+      "file": "svetlana_p1.mp3",
+      "bytes": 303020,
+      "sha256": "7e531856befb0331fef002bbae6e48cc15f06dc015e6c3b0f5d1e132777149e4",
+      "seconds": 18.864,
+      "peak_pcm16": 18257,
+      "rms_pcm16": 2944.065068585203,
+      "decoded": true,
+      "human_listened": false
+    },
+    {
+      "file": "svetlana_p2.mp3",
+      "bytes": 619052,
+      "sha256": "ec3ae19c859c6d33cb4703847387a136002dc2731de82d28c9c688d644b682cb",
+      "seconds": 38.616,
+      "peak_pcm16": 18146,
+      "rms_pcm16": 2837.196713271061,
+      "decoded": true,
+      "human_listened": false
+    },
+    {
+      "file": "svetlana_p3.mp3",
+      "bytes": 1587884,
+      "sha256": "d5a95f16f30cd400de31c811cba026eb2adfe841cdabf862418a834faa8746b1",
+      "seconds": 99.168,
+      "peak_pcm16": 20550,
+      "rms_pcm16": 2839.545856968296,
+      "decoded": true,
+      "human_listened": false
+    },
+    {
+      "file": "svetlana_comment.mp3",
+      "bytes": 717356,
+      "sha256": "e48b3327b7ea351de882e5fecb576c35a102250de66127271a05e6cf9f0620d7",
+      "seconds": 44.76,
+      "peak_pcm16": 20725,
+      "rms_pcm16": 2783.503185474133,
+      "decoded": true,
+      "human_listened": false
+    }
+  ],
+  "source_photos_unchanged": true,
+  "full_line_readability_not_audited": true
+}

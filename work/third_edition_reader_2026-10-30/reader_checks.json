@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "browser_automated": false,
+  "checks": [
+    "offline assets",
+    "three complete paragraphs",
+    "voice switch preserves paragraph",
+    "next paragraph",
+    "optional commentary",
+    "restart"
+  ],
+  "human_listened": false
+}

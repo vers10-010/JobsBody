@@ -1,0 +1,74 @@
+# JobsBody: start with rules, journals and the current third-edition reader.
+# Other project folders remain on disk and can be included later.
+/*
+!/.gitignore
+!/.gitattributes
+!/*.md
+!/*.py
+!/*.json
+!/Журналы/
+!/outputs/
+!/work/
+
+/outputs/*
+!/outputs/Third_Edition_Reader_2026-10-30/
+/work/*
+!/work/third_edition_reader_2026-10-30/
+!/work/third_edition_coverage_2026-10-30/
+
+# Track only these text/source formats inside the included folders.
+/**/*
+!/**/
+!/**/*.md
+!/**/*.txt
+!/**/*.json
+!/**/*.jsonl
+!/**/*.html
+!/**/*.css
+!/**/*.js
+!/**/*.cjs
+!/**/*.py
+!/**/*.cmd
+!/**/*.bat
+!/**/*.ps1
+!/**/*.csv
+!/**/*.tsv
+!/**/.gitignore
+!/**/.gitattributes
+
+# Reapply the boundary after extension exceptions.
+/.codex-remote-attachments/
+/.tmp.drivedownload/
+/.tmp.driveupload/
+/Вложения/
+/Материалы из прежних папок/
+/Объединение/
+/Git-план/
+/output/
+/source_photos/
+/tmp/
+/outputs/*
+!/outputs/Third_Edition_Reader_2026-10-30/
+/work/*
+!/work/third_edition_reader_2026-10-30/
+!/work/third_edition_coverage_2026-10-30/
+
+# Dependencies, generated sound and source images.
+node_modules/
+.venv/
+venv/
+__pycache__/
+runtime/
+tts_parts/
+_build/
+audio/
+originals/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.log
+*.tmp
+Thumbs.db
+Desktop.ini
