@@ -1,0 +1,68 @@
+{
+  "source_received": true,
+  "translation_ready": true,
+  "audio_ready": true,
+  "human_listened": false,
+  "source": "C:\\Work\\JobsBody\\source_photos\\Third_Edition_2026-10-19\\PXL_20261019_201620241.jpg",
+  "source_sha256": "223e7064b540daecd4f03442e1c17fdada3d4288a3f6e69ef9bc9a8c372da80d",
+  "source_photo_visually_checked": true,
+  "audio": [
+    {
+      "file": "audio/svetlana_p7.mp3",
+      "bytes": 1098284,
+      "sha256": "541ff677b9d1ab5ac0aab235551998fc1e396370bcd7cb65fb4ef87778d4b608",
+      "seconds": 68.568,
+      "peak_pcm16": 19691,
+      "rms_pcm16": 2976.5358802717765,
+      "decoded": true
+    },
+    {
+      "file": "audio/svetlana_p8.mp3",
+      "bytes": 1020332,
+      "sha256": "8ca32518065a2eb9323b8a701aa8a6ef8aa1a5a469dc25b9f4cc1350899f5127",
+      "seconds": 63.696,
+      "peak_pcm16": 22434,
+      "rms_pcm16": 2868.657078133713,
+      "decoded": true
+    },
+    {
+      "file": "audio/svetlana_p9.mp3",
+      "bytes": 1798700,
+      "sha256": "609d33f4bc90144fdd1cb61063201708e3b3c7128485dedea6422667a2c125ee",
+      "seconds": 112.344,
+      "peak_pcm16": 24573,
+      "rms_pcm16": 2845.2448611225873,
+      "decoded": true
+    },
+    {
+      "file": "audio/svetlana_p10.mp3",
+      "bytes": 739628,
+      "sha256": "8ab2642398c1b87166449ce020b42e6ff685f2b3daa297699b683f5e3ed14886",
+      "seconds": 46.152,
+      "peak_pcm16": 19495,
+      "rms_pcm16": 2741.7475929102434,
+      "decoded": true
+    },
+    {
+      "file": "audio/svetlana_comment.mp3",
+      "bytes": 1194284,
+      "sha256": "e706c43ee18a8d4016707c8b210d7ad776a611667efcdf28a8f7fd7f245dec23",
+      "seconds": 74.568,
+      "peak_pcm16": 20732,
+      "rms_pcm16": 2880.094096732446,
+      "decoded": true
+    },
+    {
+      "file": "audio/svetlana_author.mp3",
+      "bytes": 4695212,
+      "sha256": "45d20fb6567ac0f40fc1731022c1b507ae0cccc69ebae6430de2b842c9efb82a",
+      "seconds": 293.36,
+      "decoded": true
+    }
+  ],
+  "voice": "ru-RU-SvetlanaNeural",
+  "english_voice": "en-US-JennyNeural",
+  "rate": "-15%",
+  "reader_links_exist": true,
+  "browser_visual_check": false
+}
