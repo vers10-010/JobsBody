@@ -1,0 +1,49 @@
+{
+  "source_received": true,
+  "translation_ready": true,
+  "audio_ready": true,
+  "human_listened": false,
+  "source_sha256": "223e7064b540daecd4f03442e1c17fdada3d4288a3f6e69ef9bc9a8c372da80d",
+  "source": "C:\\Work\\JobsBody\\source_photos\\Third_Edition_2026-10-19\\PXL_20261019_201620241.jpg",
+  "audio": [
+    {
+      "file": "audio\\svetlana_p4.mp3",
+      "bytes": 634412,
+      "sha256": "53d3cec7a02786d1f8db5b4db5f84b072a9f5b97e39150e9e6260d324df70e57",
+      "seconds": 39.576,
+      "decoded": true
+    },
+    {
+      "file": "audio\\svetlana_p5.mp3",
+      "bytes": 1044140,
+      "sha256": "09d4afcf05f6206cfecdbadff3e858ab09d09ee862155f7bf5faff7d909a7c94",
+      "seconds": 65.184,
+      "decoded": true
+    },
+    {
+      "file": "audio\\svetlana_p6.mp3",
+      "bytes": 688940,
+      "sha256": "e12820992e3ee4f770bfe5cfed7d4bb2f67d1936950b91d01de5900fc899b1c9",
+      "seconds": 42.984,
+      "decoded": true
+    },
+    {
+      "file": "audio\\svetlana_comment.mp3",
+      "bytes": 878636,
+      "sha256": "eae78ebfb8ce5dd9ba3cb0d8d5eed0965f6016ed420055a8f1762ad6859d942e",
+      "seconds": 54.84,
+      "decoded": true
+    },
+    {
+      "file": "audio\\svetlana_author.mp3",
+      "bytes": 2396588,
+      "sha256": "848016cb827874c6e923d87d2950376dfae7d4a7c1bebe6076680d72379e5580",
+      "seconds": 149.694,
+      "decoded": true
+    }
+  ],
+  "voice": "ru-RU-SvetlanaNeural",
+  "rate": "-15%",
+  "translation_checked_against_source_photo": true,
+  "browser_visual_check": false
+}
