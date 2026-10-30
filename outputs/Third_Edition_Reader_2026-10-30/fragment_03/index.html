@@ -17,8 +17,40 @@ const label=document.createElement('label');
 const follow=document.createElement('input');follow.type='checkbox';follow.checked=false;
 label.append(follow,document.createTextNode(' Следить за текстом'));
 toolbar.append(toggle,label,status,full);
+const bookmark=document.createElement('small');bookmark.setAttribute('role','status');toolbar.append(bookmark);
+const storageKey='jobsbody-third-edition-fragment-03-resume-v1';
+let restoring=false,pending=null,storageFailed=false;
+function formatTime(seconds){const n=Math.max(0,Math.floor(seconds));return Math.floor(n/60)+':'+String(n%60).padStart(2,'0');}
+function showBookmark(time){bookmark.textContent=storageFailed?'Браузер не разрешил сохранить место.':('Место: '+formatTime(time)+' · '+(mode==='comment'?'комментарий':'авторский текст'));}
+function savePosition(){
+ if(restoring)return;
+ const time=full.currentTime;
+ if(!Number.isFinite(time)||time<0)return;
+ try{localStorage.setItem(storageKey,JSON.stringify({mode,time,rate:full.playbackRate,follow:follow.checked}));}
+ catch(_){storageFailed=true;}
+ showBookmark(time);
+}
+function applyPending(){
+ if(!pending||full.readyState<1)return;
+ const target=pending;
+ const limit=Number.isFinite(full.duration)?full.duration:target.time;
+ try{full.currentTime=Math.max(0,Math.min(target.time,limit));full.playbackRate=target.rate;}
+ catch(_){return;}
+ pending=null;restoring=false;sync();showBookmark(full.currentTime);update();
+ if(target.play)play();
+}
+function loadPosition(nextMode,time,rate,shouldPlay){
+ restoring=true;full.pause();mode=nextMode;
+ pending={time,rate,play:shouldPlay};
+ const source=mode==='author'?authorSource:commentSource;
+ if(full.getAttribute('src')!==source){full.setAttribute('src',source);full.load();}
+ showBookmark(time);
+ applyPending();
+}
+full.addEventListener('loadedmetadata',applyPending);
 function update(){toggle.textContent=full.paused?'Слушать':'Пауза';}
 function sync(){
+ if(restoring)return;
  let index=sections.length-1;
  if(mode==='author'){index=durations.length-1;for(let i=0;i<durations.length;i++){if(full.currentTime<starts[i]+durations[i]+0.65){index=i;break;}}}
  active=index;
@@ -49,13 +81,8 @@ sections.forEach((section,i)=>{
  button.textContent=i<durations.length?'Слушать с этого абзаца':'Слушать комментарий';
  audio.replaceWith(button);
  button.addEventListener('click',()=>{
-   full.pause();
    const nextMode=i<durations.length?'author':'comment';
-   const source=nextMode==='author'?authorSource:commentSource;
-   mode=nextMode;
-   if(full.getAttribute('src')!==source)full.setAttribute('src',source);
-   full.currentTime=nextMode==='author'?starts[i]:0;
-   sync();play();
+   loadPosition(nextMode,nextMode==='author'?starts[i]:0,full.playbackRate,true);
  });
 });
 full.addEventListener('play',()=>{update();sync();});
@@ -63,6 +90,19 @@ full.addEventListener('pause',update);
 full.addEventListener('timeupdate',sync);
 full.addEventListener('seeked',sync);
 follow.addEventListener('change',sync);
+['timeupdate','pause','seeked','ratechange','ended'].forEach(event=>full.addEventListener(event,savePosition));
+follow.addEventListener('change',savePosition);
+window.addEventListener('pagehide',savePosition);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')savePosition();});
 full.addEventListener('ended',()=>{update();sections.forEach(s=>{s.classList.toggle('active',false);s.removeAttribute('aria-current');});active=-1;});
+try{
+ const saved=JSON.parse(localStorage.getItem(storageKey)||'null');
+ if(saved&&(saved.mode==='author'||saved.mode==='comment')&&Number.isFinite(saved.time)&&saved.time>=0){
+   follow.checked=saved.follow===true;
+   const rate=Number.isFinite(saved.rate)&&saved.rate>=.25&&saved.rate<=4?saved.rate:1;
+   showBookmark(saved.time);
+   loadPosition(saved.mode,saved.time,rate,false);
+ }else bookmark.textContent='Место будет сохраняться автоматически.';
+}catch(_){storageFailed=true;showBookmark(0);}
 </script>
 </html>
